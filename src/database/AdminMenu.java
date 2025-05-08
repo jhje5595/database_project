@@ -72,11 +72,11 @@ public class AdminMenu extends JFrame {
     
     private void viewRepairInfo() {
         JOptionPane.showMessageDialog(this, "캠핑카 정비 내역 조회 선택");
-        // 캠핑카 선택 후 정비 내역 조회
+        new RepairHistoryViewer(conn);
     }
     
     private void executeCustomSQL() {
         JOptionPane.showMessageDialog(this, "임의 SQL 실행 기능 선택");
-        // 직접 SQL 입력받아 실행
+        new SqlQueryExecutor(conn);
     }
 }
