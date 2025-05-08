@@ -52,6 +52,7 @@ public class AdminMenu extends JFrame {
     private void insertData() {
         JOptionPane.showMessageDialog(this, "삽입 기능 선택");
         // 테이블 선택해서 삽입화면으로
+        new CompanyRegistration(conn);
     }
     
     private void deleteData() {
