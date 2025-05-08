@@ -44,13 +44,11 @@ public class AdminMenu extends JFrame {
     }
     
     private void initializeDatabase() {
-        JOptionPane.showMessageDialog(this, "데이터베이스 초기화 기능 실행 예정");
         DatabaseInitializer initializer = new DatabaseInitializer(conn);
         initializer.initialize();
     }
     
     private void insertData() {
-        JOptionPane.showMessageDialog(this, "삽입 기능 선택");
         // 테이블 선택해서 삽입화면으로
         new CompanyRegistration(conn);
     }
@@ -71,12 +69,10 @@ public class AdminMenu extends JFrame {
     }
     
     private void viewRepairInfo() {
-        JOptionPane.showMessageDialog(this, "캠핑카 정비 내역 조회 선택");
         new RepairHistoryViewer(conn);
     }
     
     private void executeCustomSQL() {
-        JOptionPane.showMessageDialog(this, "임의 SQL 실행 기능 선택");
         new SqlQueryExecutor(conn);
     }
 }

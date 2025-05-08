@@ -28,7 +28,6 @@ public class Login extends JFrame {
 
     private void adminLogin() {
         try {
-            // ★ Db1.java 스타일: 직접 getConnection 호출
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/DBTEST", "root", "1234"
@@ -43,33 +42,14 @@ public class Login extends JFrame {
     }
 
     private void userLogin() {
-        String userId = JOptionPane.showInputDialog(this, "회원 아이디 입력:");
-        String userPw = JOptionPane.showInputDialog(this, "회원 비밀번호 입력:");
+        UserLoginDialog dialog = new UserLoginDialog(this);
+        dialog.setVisible(true);
 
-        try {
-            // ★ Db1.java 스타일: 직접 getConnection 호출
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/DBTEST", "root", "1234"
-            );
-
-            // 고객 로그인 확인
-            String sql = "SELECT * FROM Customer WHERE CustomerID = ? AND Password = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, userId);
-            pstmt.setString(2, userPw);
-
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                JOptionPane.showMessageDialog(this, "회원 로그인 성공");
-                new UserMenu(conn, userId); // 회원 메뉴 화면 띄우기
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "아이디 또는 비밀번호가 잘못되었습니다.", "로그인 실패", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "회원 로그인 실패", "에러", JOptionPane.ERROR_MESSAGE);
+        if (dialog.isLoginSuccess()) {
+            Connection conn = dialog.getConnection();
+            String userId = dialog.getUserId();
+            new UserMenu(conn, userId); // 회원 전용 메뉴로 이동
+            dispose();
         }
     }
 

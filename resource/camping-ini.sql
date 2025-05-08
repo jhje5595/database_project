@@ -1,11 +1,3 @@
--- 이름: demo_madang.sql
--- 설명
-
-/* root 계정으로 접속, madangdb 데이터베이스 생성, madang 계정 생성 */
-/* MySQL Workbench에서 초기화면에서 +를 눌러 root Connection을 만들어 접속한다. */
-/* user : madang, database : madangdb */
-/* 사용자 삭제 drop user madang@localhost; */
-
 drop database if exists DBTEST;
 create database if not exists DBTEST;
 USE DBTEST;
@@ -13,7 +5,9 @@ USE DBTEST;
 -- user1 계정을 암호 user1 으로 만들고 모든 권한을 부여한다.
 DROP USER IF EXISTS 'user1'@'localhost';
 create user user1@localhost identified by 'user1';
-grant all privileges on DBTEST.* to user1@localhost;
+GRANT SELECT, INSERT, UPDATE, DELETE ON DBTEST.* TO 'user1'@'localhost';
+
+-- user1 권한 부여하는거 다시 설정하자
 
 
 -- 테이블 삭제
