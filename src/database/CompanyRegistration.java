@@ -12,6 +12,7 @@ public class CompanyRegistration extends JFrame {
 
     public CompanyRegistration(Connection conn) {
         this.conn = conn;
+        
 
         setTitle("캠핑카 대여회사 등록");
         setSize(400, 400);
