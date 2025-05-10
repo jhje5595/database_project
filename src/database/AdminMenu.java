@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
 
+
 public class AdminMenu extends JFrame {
     private Connection conn;
     
@@ -50,22 +51,27 @@ public class AdminMenu extends JFrame {
     
     private void insertData() {
         // 테이블 선택해서 삽입화면으로
+        System.out.println("conn null? " + (conn == null));
         new CompanyRegistration(conn);
     }
     
     private void deleteData() {
         JOptionPane.showMessageDialog(this, "삭제 기능 선택");
         // 삭제조건 입력받고 삭제
+        new DeleteRecord(conn);
     }
     
     private void updateData() {
         JOptionPane.showMessageDialog(this, "변경 기능 선택");
         // 변경할 테이블/조건 입력받고 변경
+        new UpdateRecord(conn);
+        
     }
     
     private void viewAllTables() {
         JOptionPane.showMessageDialog(this, "전체 테이블 보기 선택");
         // 전체 테이블 조회
+        new ViewAllTables(conn);
     }
     
     private void viewRepairInfo() {
