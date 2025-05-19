@@ -70,7 +70,7 @@ public class UserRequestRepair extends JFrame {
                 LocalDate due = today.plusDays(7);
 
                 PreparedStatement insert = conn.prepareStatement(
-                    "INSERT INTO 외부정비정보 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+          e          "INSERT INTO 외부정비정보 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
                 );
                 insert.setInt(1, nextId);
                 insert.setString(2, camperId);
