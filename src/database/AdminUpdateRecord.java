@@ -5,12 +5,12 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.Statement;
 
-public class UpdateRecord extends JFrame {
+public class AdminUpdateRecord extends JFrame {
     private Connection conn;
     private JComboBox<String> tableComboBox;
     private JTextField setField, conditionField;
 
-    public UpdateRecord(Connection conn) {
+    public AdminUpdateRecord(Connection conn) {
         this.conn = conn;
 
         setTitle("조건 기반 변경");
@@ -41,6 +41,7 @@ public class UpdateRecord extends JFrame {
         updateBtn.addActionListener(e -> updateRecord());
         cancelBtn.addActionListener(e -> dispose());
 
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

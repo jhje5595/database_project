@@ -15,7 +15,7 @@ public class AdminMenu extends JFrame {
         setTitle("캠핑카 예약 시스템 - 관리자 메뉴");
         setSize(400, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(7, 1, 10, 10));
+        setLayout(new GridLayout(3, 3));
         
         JButton initDbBtn = new JButton("데이터베이스 초기화");
         JButton insertBtn = new JButton("테이블 삽입");
@@ -41,44 +41,39 @@ public class AdminMenu extends JFrame {
         viewRepairBtn.addActionListener(e -> viewRepairInfo());
         sqlQueryBtn.addActionListener(e -> executeCustomSQL());
         
+        setLocationRelativeTo(null);
         setVisible(true);
     }
     
     private void initializeDatabase() {
-        DatabaseInitializer initializer = new DatabaseInitializer(conn);
+        AdminDatabaseInitializer initializer = new AdminDatabaseInitializer(conn);
         initializer.initialize();
     }
     
     private void insertData() {
-        // 테이블 선택해서 삽입화면으로
-        System.out.println("conn null? " + (conn == null));
-        new CompanyRegistration(conn);
+        new AdminCompanyRegistration(conn);
     }
     
     private void deleteData() {
-        JOptionPane.showMessageDialog(this, "삭제 기능 선택");
         // 삭제조건 입력받고 삭제
-        new DeleteRecord(conn);
+        new AdminDeleteRecord(conn);
     }
     
     private void updateData() {
-        JOptionPane.showMessageDialog(this, "변경 기능 선택");
         // 변경할 테이블/조건 입력받고 변경
-        new UpdateRecord(conn);
-        
+        new AdminUpdateRecord(conn);
     }
     
     private void viewAllTables() {
-        JOptionPane.showMessageDialog(this, "전체 테이블 보기 선택");
         // 전체 테이블 조회
-        new ViewAllTables(conn);
+        new AdminViewAllTables(conn);
     }
     
     private void viewRepairInfo() {
-        new RepairHistoryViewer(conn);
+        new AdminRepairHistoryList(conn);
     }
     
     private void executeCustomSQL() {
-        new SqlQueryExecutor(conn);
+        new AdminSqlQueryExecutor(conn);
     }
 }

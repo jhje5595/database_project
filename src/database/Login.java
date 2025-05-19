@@ -20,21 +20,22 @@ public class Login extends JFrame {
         add(adminLoginBtn);
         add(userLoginBtn);
 
-        adminLoginBtn.addActionListener(e -> adminLogin());
-        userLoginBtn.addActionListener(e -> userLogin());
+        adminLoginBtn.addActionListener(e -> adminLogin()); // 관리자 로그인 클릭시 adminLogin()호출
+        userLoginBtn.addActionListener(e -> userLogin()); // 회원 로그인 클릭시 userLogin()호출
 
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
     private void adminLogin() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver"); // 예제 소스파일에 있는 DB연동 코드
             Connection conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/DBTEST", "root", "1234"
-            );
+            ); //관리자 계정 root/1234
             JOptionPane.showMessageDialog(this, "관리자 로그인 성공");
             new AdminMenu(conn); // 관리자 메뉴 화면 띄우기
-            dispose();
+            dispose(); // 로그인 창 닫기
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "관리자 로그인 실패", "에러", JOptionPane.ERROR_MESSAGE);
@@ -49,7 +50,7 @@ public class Login extends JFrame {
             Connection conn = dialog.getConnection();
             String userId = dialog.getUserId();
             new UserMenu(conn, userId); // 회원 전용 메뉴로 이동
-            dispose();
+            dispose(); // 로그인 창 닫기
         }
     }
 

@@ -6,11 +6,11 @@ import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-public class CompanyRegistration extends JFrame {
+public class AdminCompanyRegistration extends JFrame {
     private Connection conn;
     private JTextField companyIdField, companyNameField, addressField, phoneField, managerNameField, managerEmailField;
 
-    public CompanyRegistration(Connection conn) {
+    public AdminCompanyRegistration(Connection conn) {
         this.conn = conn;
         
 
@@ -48,6 +48,7 @@ public class CompanyRegistration extends JFrame {
         saveBtn.addActionListener(e -> insertCompany());
         cancelBtn.addActionListener(e -> dispose());
 
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

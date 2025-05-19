@@ -5,12 +5,12 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.Statement;
 
-public class DeleteRecord extends JFrame {
+public class AdminDeleteRecord extends JFrame {
     private Connection conn;
     private JComboBox<String> tableComboBox;
     private JTextField conditionField;
 
-    public DeleteRecord(Connection conn) {
+    public AdminDeleteRecord(Connection conn) {
         this.conn = conn;
 
         setTitle("조건 기반 삭제");
@@ -41,6 +41,7 @@ public class DeleteRecord extends JFrame {
         deleteBtn.addActionListener(e -> deleteRecord());
         cancelBtn.addActionListener(e -> dispose());
 
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

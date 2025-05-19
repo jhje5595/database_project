@@ -6,16 +6,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-public class SqlQueryExecutor extends JFrame {
+public class AdminSqlQueryExecutor extends JFrame {
     private Connection conn;
     private JTextArea queryArea;
     private JTable resultTable;
 
-    public SqlQueryExecutor(Connection conn) {
+    public AdminSqlQueryExecutor(Connection conn) {
         this.conn = conn;
 
         setTitle("임의 SQL 질의 실행");
-        setSize(800, 600);
+        setSize(1200, 600);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -33,6 +33,7 @@ public class SqlQueryExecutor extends JFrame {
 
         executeBtn.addActionListener(e -> executeQuery());
 
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

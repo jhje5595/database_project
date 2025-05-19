@@ -6,10 +6,10 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.SQLException;
 
-public class DatabaseInitializer {
+public class AdminDatabaseInitializer {
     private Connection conn;
 
-    public DatabaseInitializer(Connection conn) {
+    public AdminDatabaseInitializer(Connection conn) {
         this.conn = conn;
     }
 
