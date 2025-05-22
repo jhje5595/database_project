@@ -20,17 +20,17 @@ public class UserMenu extends JFrame {
 
         JButton viewCampersBtn = new JButton("캠핑카 조회");
         JButton viewMyRentalsBtn = new JButton("내 대여정보 조회");
-        JButton requestRepairBtn = new JButton("외부정비소 정비 의뢰");
+        //JButton requestRepairBtn = new JButton("외부정비소 정비 의뢰");
 
         add(viewCampersBtn);
 //        add(viewAvailableBtn);
 //        add(rentCamperBtn);
         add(viewMyRentalsBtn);
-        add(requestRepairBtn);
+        //add(requestRepairBtn);
 
         viewCampersBtn.addActionListener(e -> viewCampers());
         viewMyRentalsBtn.addActionListener(e -> viewMyRentals());
-        requestRepairBtn.addActionListener(e -> requestExternalRepair());
+        //requestRepairBtn.addActionListener(e -> requestExternalRepair());
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -44,7 +44,5 @@ public class UserMenu extends JFrame {
         new UserRentalInfo(conn,userId);
     }
 
-    private void requestExternalRepair() {
-        new UserRequestRepair(conn,userId);
-    }
+    
 }
