@@ -136,11 +136,8 @@ public class UserRentalInfo extends JFrame {
         JPanel modifyPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton changeCamperBtn = new JButton("캠핑카 변경");
         JButton changeDateBtn = new JButton("일정 변경");
-//        JButton requestRepairBtn = new JButton("외부정비소 정비 의뢰");
-//        requestRepairBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        requestRepairBtn.addActionListener(e -> {
-//            new UserRequestRepair(conn, userId);
-//        });
+        JButton requestRepairBtn = new JButton("외부정비소 정비 의뢰");
+        
 
 
         changeCamperBtn.addActionListener(e -> 
@@ -151,9 +148,13 @@ public class UserRentalInfo extends JFrame {
             new UserChangeSchedule(conn, userId, rentalId, detailMap.get("캠핑카ID"))
         );
 
+        requestRepairBtn.addActionListener(e -> {
+            new UserRequestRepair(conn, userId);
+        });
 
         modifyPanel.add(changeCamperBtn);
         modifyPanel.add(changeDateBtn);
+        modifyPanel.add(requestRepairBtn);
 
         panel.add(camperNameLabel);
         panel.add(companyLabel);
@@ -166,11 +167,13 @@ public class UserRentalInfo extends JFrame {
         panel.add(Box.createVerticalStrut(10));
         panel.add(detailBtn);
         panel.add(Box.createVerticalStrut(5));
-        //panel.add(requestRepairBtn);
+        
         panel.add(deleteBtn);
         panel.add(modifyPanel);
+        
         panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-
+        
+        
         return panel;
     }
 

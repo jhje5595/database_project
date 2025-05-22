@@ -51,7 +51,7 @@ public class AdminMenu extends JFrame {
     }
     
     private void insertData() {
-        new AdminCompanyRegistration(conn);
+        new AdminUniversalInsert(conn);
     }
     
     private void deleteData() {
