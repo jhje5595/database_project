@@ -14,8 +14,8 @@ public class UserMenu extends JFrame {
         this.userId = userId;
 
         setTitle("회원 메뉴 - " + userId);
-        setSize(400, 500);
-        setLayout(new GridLayout(3,1));
+        setSize(400, 300);
+        setLayout(new GridLayout(2,1));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JButton viewCampersBtn = new JButton("캠핑카 조회");
