@@ -33,15 +33,13 @@ public class UserRentalInfo extends JFrame {
     }
 
     private void loadUserRentals() {
+        rentalPanel.removeAll();
         String license = null;
 
         try {
-            PreparedStatement pstmt = conn.prepareStatement(
-                "SELECT 운전면허증번호 FROM 고객 WHERE 고객ID = ?"
-            );
+            PreparedStatement pstmt = conn.prepareStatement("SELECT 운전면허증번호 FROM 고객 WHERE 고객ID = ?");
             pstmt.setString(1, userId);
             ResultSet rs = pstmt.executeQuery();
-
             if (rs.next()) {
                 license = rs.getString(1);
             } else {
@@ -49,15 +47,14 @@ public class UserRentalInfo extends JFrame {
                 return;
             }
         } catch (Exception e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "운전면허증 조회 실패");
             return;
         }
 
         try {
             PreparedStatement pstmt = conn.prepareStatement(
-                "SELECT r.대여번호, r.캠핑카등록ID, c.캠핑카이름, r.캠핑카대여회사ID, f.회사명, r.대여시작일, r.대여기간, r.청구요금, r.납입기한, r.기타청구내역, r.기타청구요금, c.캠핑카상세정보, " +
-                "c.차량번호, c.승차인원수, c.캠핑카이미지, c.캠핑카대여비용, c.등록일자 " +
+                "SELECT r.대여번호, r.캠핑카등록ID, c.캠핑카이름, r.캠핑카대여회사ID, f.회사명, r.대여시작일, r.대여기간, r.청구요금, r.납입기한, r.기타청구내역, r.기타청구요금, " +
+                "c.캠핑카상세정보, c.차량번호, c.승차인원수, c.캠핑카이미지, c.캠핑카대여비용, c.등록일자 " +
                 "FROM 캠핑카대여 r " +
                 "JOIN 캠핑카 c ON r.캠핑카등록ID = c.캠핑카등록ID " +
                 "JOIN 캠핑카대여회사 f ON r.캠핑카대여회사ID = f.캠핑카대여회사ID " +
@@ -88,12 +85,13 @@ public class UserRentalInfo extends JFrame {
                 detailMap.put("대여비용", rs.getString("캠핑카대여비용"));
                 detailMap.put("등록일자", rs.getString("등록일자"));
 
-                JPanel rentalCard = createRentalCard(rentalId, camperName, companyName, startDate, period, fee, due, etc, etcFee, detailMap);
-                rentalPanel.add(rentalCard);
+                rentalPanel.add(createRentalCard(rentalId, camperName, companyName, startDate, period, fee, due, etc, etcFee, detailMap));
             }
 
+            rentalPanel.revalidate();
+            rentalPanel.repaint();
+
         } catch (SQLException e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "대여 정보 조회 실패");
         }
     }
@@ -101,19 +99,50 @@ public class UserRentalInfo extends JFrame {
     private JPanel createRentalCard(int rentalId, String camperName, String companyName, LocalDate startDate, int period, int fee, LocalDate due, String etc, int etcFee, Map<String, String> detailMap) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel camperNameLabel = new JLabel("캠핑카명: " + camperName);
-        JLabel companyLabel = new JLabel("대여회사: " + companyName);
-        JLabel startLabel = new JLabel("대여시작일: " + startDate);
-        JLabel periodLabel = new JLabel("대여기간: " + period + "일");
-        JLabel feeLabel = new JLabel("청구요금: " + fee + "원");
-        JLabel dueLabel = new JLabel("납입기한: " + due);
-        JLabel etcLabel = new JLabel("기타내역: " + etc);
-        JLabel etcFeeLabel = new JLabel("기타요금: " + etcFee + "원");
+        for (String text : new String[]{
+                "캠핑카명: " + camperName,
+                "대여회사: " + companyName,
+                "대여시작일: " + startDate,
+                "대여기간: " + period + "일",
+                "청구요금: " + fee + "원",
+                "납입기한: " + due,
+                "기타내역: " + etc,
+                "기타요금: " + etcFee + "원"
+        }) {
+            JLabel label = new JLabel(text, SwingConstants.CENTER);
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(label);
+        }
 
         JButton detailBtn = new JButton("캠핑카 세부정보 보기");
         detailBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         detailBtn.addActionListener(e -> showDetailPopup(detailMap));
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(detailBtn);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton changeCamperBtn = new JButton("캠핑카 변경");
+        JButton changeDateBtn = new JButton("일정 변경");
+        JButton requestRepairBtn = new JButton("외부정비소 정비 의뢰");
+
+        changeCamperBtn.addActionListener(e -> {
+            new UserChangeCampingCar(conn, userId, rentalId, startDate, period);
+            refresh();
+        });
+        changeDateBtn.addActionListener(e -> {
+            new UserChangeSchedule(conn, userId, rentalId, detailMap.get("캠핑카ID"));
+            refresh();
+        });
+        requestRepairBtn.addActionListener(e -> new UserRequestRepair(conn, userId, detailMap.get("캠핑카ID")));
+
+        buttonPanel.add(changeCamperBtn);
+        buttonPanel.add(changeDateBtn);
+        buttonPanel.add(requestRepairBtn);
+
+        panel.add(Box.createVerticalStrut(5));
+        panel.add(buttonPanel);
 
         JButton deleteBtn = new JButton("삭제");
         deleteBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -125,72 +154,55 @@ public class UserRentalInfo extends JFrame {
                     pstmt.setInt(1, rentalId);
                     pstmt.executeUpdate();
                     JOptionPane.showMessageDialog(this, "삭제 완료");
-                    dispose();
-                    new UserRentalInfo(conn, userId);
+                    refresh();
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, "삭제 실패: " + ex.getMessage());
                 }
             }
         });
 
-        JPanel modifyPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton changeCamperBtn = new JButton("캠핑카 변경");
-        JButton changeDateBtn = new JButton("일정 변경");
-        JButton requestRepairBtn = new JButton("외부정비소 정비 의뢰");
-        
-
-
-        changeCamperBtn.addActionListener(e -> 
-        new UserChangeCampingCar(conn, userId, rentalId, startDate, period)
-    );
-     // 일정 변경
-        changeDateBtn.addActionListener(e -> 
-            new UserChangeSchedule(conn, userId, rentalId, detailMap.get("캠핑카ID"))
-        );
-
-        requestRepairBtn.addActionListener(e -> {
-            new UserRequestRepair(conn, userId);
-        });
-
-        modifyPanel.add(changeCamperBtn);
-        modifyPanel.add(changeDateBtn);
-        modifyPanel.add(requestRepairBtn);
-
-        panel.add(camperNameLabel);
-        panel.add(companyLabel);
-        panel.add(startLabel);
-        panel.add(periodLabel);
-        panel.add(feeLabel);
-        panel.add(dueLabel);
-        panel.add(etcLabel);
-        panel.add(etcFeeLabel);
-        panel.add(Box.createVerticalStrut(10));
-        panel.add(detailBtn);
         panel.add(Box.createVerticalStrut(5));
-        
         panel.add(deleteBtn);
-        panel.add(modifyPanel);
-        
         panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        
-        
         return panel;
+    }
+
+    private void refresh() {
+        dispose();
+        new UserRentalInfo(conn, userId);
     }
 
     private void showDetailPopup(Map<String, String> detailMap) {
         JDialog dialog = new JDialog(this, "캠핑카 세부정보", true);
+        dialog.setLayout(new BorderLayout());
+
         JTextArea area = new JTextArea();
         area.setEditable(false);
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : detailMap.entrySet()) {
-            sb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+            if (!entry.getKey().equals("캠핑카이미지")) {
+                sb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+            }
         }
         area.setText(sb.toString());
-        dialog.add(new JScrollPane(area));
-        dialog.setSize(350, 250);
+
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.add(new JScrollPane(area), BorderLayout.CENTER);
+
+        // 이미지 로딩
+        try {
+            String imagePath = "images/" + detailMap.get("캠핑카이미지"); // 상대 경로
+            ImageIcon icon = new ImageIcon(imagePath);
+            Image scaledImage = icon.getImage().getScaledInstance(300, 200, Image.SCALE_SMOOTH);
+            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+            contentPanel.add(imageLabel, BorderLayout.NORTH);
+        } catch (Exception e) {
+            System.out.println("이미지 로드 실패: " + e.getMessage());
+        }
+
+        dialog.add(contentPanel, BorderLayout.CENTER);
+        dialog.setSize(400, 400);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
 }
-
-// CamperChangeDialog, DateChangeDialog 클래스는 별도 구현 필요

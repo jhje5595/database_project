@@ -13,7 +13,7 @@ public class AdminUpdateRecord extends JFrame {
     public AdminUpdateRecord(Connection conn) {
         this.conn = conn;
 
-        setTitle("조건 기반 변경");
+        setTitle("테이블 변경");
         setSize(500, 250);
         setLayout(new GridLayout(5, 2, 10, 10));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -27,7 +27,7 @@ public class AdminUpdateRecord extends JFrame {
 
         add(new JLabel("테이블 선택:"));
         add(tableComboBox);
-        add(new JLabel("SET 구문 (예: 주소='서울')"));
+        add(new JLabel("바꿀 속성값 (예: 주소='서울')"));
         add(setField);
         add(new JLabel("WHERE 조건 (예: 캠핑카대여회사ID='C001')"));
         add(conditionField);
@@ -51,7 +51,7 @@ public class AdminUpdateRecord extends JFrame {
         String condition = conditionField.getText().trim();
 
         if (setClause.isEmpty() || condition.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "SET 구문과 WHERE 조건을 모두 입력하세요.", "경고", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "바꿀 속성 구문과 WHERE 조건을 모두 입력하세요.", "경고", JOptionPane.WARNING_MESSAGE);
             return;
         }
 

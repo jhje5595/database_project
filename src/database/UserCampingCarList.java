@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 
 public class UserCampingCarList extends JFrame {
     private JPanel camperPanel;
@@ -71,7 +73,7 @@ public class UserCampingCarList extends JFrame {
         JLabel nameLabel = new JLabel("이름: " + name);
         JLabel numberLabel = new JLabel("차량번호: " + number);
         JLabel peopleLabel = new JLabel("인원수: " + people + "명");
-        JLabel priceLabel = new JLabel("대여비: " + price + "원");
+        JLabel priceLabel = new JLabel("대여비(1일): " + price + "원");
 
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         numberLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -205,15 +207,55 @@ class UserCanRentDay extends JFrame {
 
 class UserRentCampingCar extends JFrame {
     public UserRentCampingCar(Connection conn, String userId, String defaultCamperId) {
-        setTitle("캠핑카 대여 등록");
+        String camperName = null;
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("SELECT 캠핑카이름 FROM 캠핑카 WHERE 캠핑카등록ID = ?");
+            pstmt.setString(1, defaultCamperId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) camperName = rs.getString(1);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "캠핑카 정보를 불러오지 못했습니다.");
+            return;
+        }
+
+        setTitle("캠핑카 대여 등록 - " + camperName);
         setSize(400, 300);
-        setLayout(new GridLayout(5, 2));
+        setLayout(new GridLayout(6, 2));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JTextField camperIdField = new JTextField(defaultCamperId);
-        JTextField startDateField = new JTextField("2025-06-01");
+        camperIdField.setEditable(false);
+
+        JTextField startDateField = new JTextField("2025-05-01");
         JTextField periodField = new JTextField();
-        JTextField 기타청구Field = new JTextField("없음");
+
+        String[] extras = {
+            "없음", "자전거 대여", "전기포트 추가", "텐트 대여", "그릴 대여", 
+            "침구 추가", "세탁 서비스", "멀티댑 대여", "랜턴 추가", 
+            "캠핑의자 대여"
+        };
+        Map<String, Integer> extraPriceMap = Map.of(
+            "없음", 0,
+            "자전거 대여", 50000,
+            "전기포트 추가", 10000,
+            "텐트 대여", 40000,
+            "그릴 대여", 15000,
+            "침구 추가", 25000,
+            "세탁 서비스", 5000,
+            "멀티댑 대여", 5000,
+            "랜턴 추가", 8000,
+            "캠핑의자 대여", 10000
+        );
+
+        JComboBox<String> extraCombo = new JComboBox<>(extras);
+        JTextField extraFeeField = new JTextField("0");
+        extraFeeField.setEditable(false);
+
+        extraCombo.addActionListener(e -> {
+            String selected = (String) extraCombo.getSelectedItem();
+            extraFeeField.setText(String.valueOf(extraPriceMap.get(selected)));
+        });
 
         add(new JLabel("캠핑카 등록ID:"));
         add(camperIdField);
@@ -222,20 +264,24 @@ class UserRentCampingCar extends JFrame {
         add(new JLabel("대여 기간 (일):"));
         add(periodField);
         add(new JLabel("기타 청구 내역:"));
-        add(기타청구Field);
+        add(extraCombo);
+        add(new JLabel("기타 청구 요금:"));
+        add(extraFeeField);
 
         JButton saveBtn = new JButton("대여 등록");
+        JButton cancelBtn = new JButton("대여 취소"); // 추가됨
         add(saveBtn);
+        add(cancelBtn); // 레이아웃에 추가
 
         saveBtn.addActionListener(e -> {
             try {
                 String camperId = camperIdField.getText();
                 String startDate = startDateField.getText();
                 int period = Integer.parseInt(periodField.getText());
-                String 기타내역 = 기타청구Field.getText();
+                String 기타내역 = (String) extraCombo.getSelectedItem();
+                int 기타요금 = Integer.parseInt(extraFeeField.getText());
                 LocalDate start = LocalDate.parse(startDate);
 
-                // 대여 중복 체크
                 PreparedStatement checkStmt = conn.prepareStatement(
                     "SELECT 대여시작일, 대여기간 FROM 캠핑카대여 WHERE 캠핑카등록ID = ?"
                 );
@@ -252,9 +298,7 @@ class UserRentCampingCar extends JFrame {
                 }
 
                 String license = null;
-                PreparedStatement find = conn.prepareStatement(
-                    "SELECT 운전면허증번호 FROM 고객 WHERE 고객ID = ?"
-                );
+                PreparedStatement find = conn.prepareStatement("SELECT 운전면허증번호 FROM 고객 WHERE 고객ID = ?");
                 find.setString(1, userId);
                 ResultSet rs = find.executeQuery();
                 if (rs.next()) {
@@ -296,7 +340,7 @@ class UserRentCampingCar extends JFrame {
                 insert.setDate(8, Date.valueOf(startDate));
                 insert.setInt(9, period);
                 insert.setString(10, 기타내역);
-                insert.setInt(11, 0);
+                insert.setInt(11, 기타요금);
 
                 insert.executeUpdate();
                 JOptionPane.showMessageDialog(this, "대여 등록 성공!");
@@ -308,7 +352,11 @@ class UserRentCampingCar extends JFrame {
             }
         });
 
+        cancelBtn.addActionListener(e -> dispose());
+
         setLocationRelativeTo(null);
         setVisible(true);
     }
 }
+
+

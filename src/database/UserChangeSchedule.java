@@ -1,7 +1,6 @@
 package database;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
 import java.time.LocalDate;
@@ -10,25 +9,29 @@ public class UserChangeSchedule extends JDialog {
     public UserChangeSchedule(Connection conn, String userId, int rentalId, String camperId) {
         setTitle("일정 변경");
         setSize(400, 250);
-        setLayout(new GridLayout(4, 2));
+        setLayout(new BorderLayout());
         setModal(true);
 
+        JPanel inputPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         JTextField startDateField = new JTextField();
         JTextField periodField = new JTextField();
-        JButton updateBtn = new JButton("변경하기");
 
-        add(new JLabel("새 대여 시작일 (yyyy-MM-dd):"));
-        add(startDateField);
-        add(new JLabel("대여 기간 (일):"));
-        add(periodField);
-        add(new JLabel());
-        add(updateBtn);
+        inputPanel.add(new JLabel("새 대여 시작일 (yyyy-MM-dd):"));
+        inputPanel.add(startDateField);
+        inputPanel.add(new JLabel("대여 기간 (일):"));
+        inputPanel.add(periodField);
+
+        add(inputPanel, BorderLayout.CENTER);
+
+        JButton updateBtn = new JButton("변경하기");
+        JButton cancelBtn = new JButton("변경 취소");
 
         updateBtn.addActionListener(e -> {
             try {
                 LocalDate newStart = LocalDate.parse(startDateField.getText());
                 int newPeriod = Integer.parseInt(periodField.getText());
 
+                // 1. 해당 캠핑카가 이미 예약되어 있는지 확인
                 PreparedStatement conflictCheck = conn.prepareStatement(
                     "SELECT * FROM 캠핑카대여 WHERE 캠핑카등록ID = ? AND 대여번호 != ? " +
                     "AND NOT (DATE_ADD(대여시작일, INTERVAL 대여기간 DAY) <= ? OR 대여시작일 >= ?)"
@@ -43,22 +46,46 @@ public class UserChangeSchedule extends JDialog {
                     return;
                 }
 
+                // 2. 캠핑카의 일일 대여비용 조회
+                PreparedStatement feeQuery = conn.prepareStatement(
+                    "SELECT 캠핑카대여비용 FROM 캠핑카 WHERE 캠핑카등록ID = ?"
+                );
+                feeQuery.setString(1, camperId);
+                ResultSet feeRs = feeQuery.executeQuery();
+                if (!feeRs.next()) {
+                    JOptionPane.showMessageDialog(this, "캠핑카 요금 정보를 찾을 수 없습니다.");
+                    return;
+                }
+                int dailyFee = feeRs.getInt("캠핑카대여비용");
+                int totalFee = dailyFee * newPeriod;
+
+                // 3. 일정 및 요금 업데이트
                 PreparedStatement update = conn.prepareStatement(
-                    "UPDATE 캠핑카대여 SET 대여시작일 = ?, 대여기간 = ?, 납입기한 = DATE_ADD(?, INTERVAL ? DAY) WHERE 대여번호 = ?"
+                    "UPDATE 캠핑카대여 SET 대여시작일 = ?, 대여기간 = ?, 납입기한 = DATE_ADD(?, INTERVAL ? DAY), 청구요금 = ? WHERE 대여번호 = ?"
                 );
                 update.setDate(1, Date.valueOf(newStart));
                 update.setInt(2, newPeriod);
                 update.setDate(3, Date.valueOf(newStart));
                 update.setInt(4, newPeriod);
-                update.setInt(5, rentalId);
+                update.setInt(5, totalFee);
+                update.setInt(6, rentalId);
                 update.executeUpdate();
-                JOptionPane.showMessageDialog(this, "일정 변경 완료");
-                dispose();
 
+                JOptionPane.showMessageDialog(this, "일정 및 요금 변경 완료");
+                dispose();
             } catch (Exception ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "변경 실패: " + ex.getMessage());
             }
         });
+
+        cancelBtn.addActionListener(e -> dispose());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        buttonPanel.add(updateBtn);
+        buttonPanel.add(cancelBtn);
+
+        add(buttonPanel, BorderLayout.SOUTH);
 
         setLocationRelativeTo(null);
         setVisible(true);
