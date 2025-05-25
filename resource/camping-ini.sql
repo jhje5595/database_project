@@ -403,6 +403,7 @@ INSERT INTO `외부정비정보` VALUES
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON `DBTEST`.`캠핑카` TO 'user1'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON `DBTEST`.`캠핑카대여` TO 'user1'@'localhost';
+GRANT SELECT ON `DBTEST`.`캠핑카대여회사` TO 'user1'@'localhost';
 GRANT SELECT ON `DBTEST`.`고객` TO 'user1'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON `DBTEST`.`외부정비정보` TO 'user1'@'localhost';
 GRANT SELECT ON `DBTEST`.`외부캠핑카정비소` TO 'user1'@'localhost';
