@@ -80,7 +80,7 @@ public class UserChangeCampingCar extends JDialog {
         cancelBtn.addActionListener(e -> dispose());
 
         JPanel formPanel = new JPanel(new BorderLayout());
-        formPanel.add(new JLabel("변경할 캠핑카 선택:"), BorderLayout.NORTH);
+        formPanel.add(new JLabel("변경할 캠핑카 선택(일정이 겹치지 않는 캠핑카만 리스트에 존재합니다.)"), BorderLayout.NORTH);
         formPanel.add(camperBox, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));

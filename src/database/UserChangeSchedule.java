@@ -28,8 +28,31 @@ public class UserChangeSchedule extends JDialog {
 
         updateBtn.addActionListener(e -> {
             try {
-                LocalDate newStart = LocalDate.parse(startDateField.getText());
-                int newPeriod = Integer.parseInt(periodField.getText());
+                String startDateStr = startDateField.getText().trim();
+                String periodStr = periodField.getText().trim();
+
+                LocalDate newStart;
+                int newPeriod;
+
+                // 날짜 형식 유효성 검사
+                try {
+                    newStart = LocalDate.parse(startDateStr);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "날짜 형식이 잘못되었습니다. (예: 2025-06-01)");
+                    return;
+                }
+
+                // 대여 기간 유효성 검사
+                try {
+                    newPeriod = Integer.parseInt(periodStr);
+                    if (newPeriod <= 0) {
+                        JOptionPane.showMessageDialog(this, "대여 기간은 1일 이상이어야 합니다.");
+                        return;
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "대여 기간은 숫자로 입력해주세요.");
+                    return;
+                }
 
                 // 1. 해당 캠핑카가 이미 예약되어 있는지 확인
                 PreparedStatement conflictCheck = conn.prepareStatement(

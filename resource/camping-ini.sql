@@ -5,7 +5,6 @@ USE DBTEST;
 -- user1 계정을 암호 user1 으로 만들고 모든 권한을 부여한다.
 DROP USER IF EXISTS 'user1'@'localhost';
 create user user1@localhost identified by 'user1';
-GRANT SELECT, INSERT, UPDATE, DELETE ON DBTEST.* TO 'user1'@'localhost';
 
 -- user1 권한 부여하는거 다시 설정하자
 
@@ -399,3 +398,12 @@ INSERT INTO `외부정비정보` VALUES
 (10, 'RV010', 'CC010', 'RS010', 'DL0123456', '차체 정렬', '2024-05-15', 220000, '2024-05-20', '휠 얼라인먼트'),
 (11, 'RV011', 'CC011', 'RS011', 'DL1123456', '서스펜션 수리', '2024-05-17', 270000, '2024-05-22', '쇼바 포함'),
 (12, 'RV012', 'CC012', 'RS012', 'DL2123456', '기어 점검', '2024-05-19', 160000, '2024-05-24', '미션오일 포함');
+
+
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON `DBTEST`.`캠핑카` TO 'user1'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON `DBTEST`.`캠핑카대여` TO 'user1'@'localhost';
+GRANT SELECT ON `DBTEST`.`고객` TO 'user1'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON `DBTEST`.`외부정비정보` TO 'user1'@'localhost';
+GRANT SELECT ON `DBTEST`.`외부캠핑카정비소` TO 'user1'@'localhost';
+

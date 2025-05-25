@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 
-public class UserLoginDialog extends JDialog {
+public class UserLoginDialog extends JDialog { // DB에 저장되어 있는 유저 ID와 비밀번호 기반으로 유저 로그인 진행
     private JTextField idField;
     private JPasswordField pwField;
     private JButton loginBtn, cancelBtn;
@@ -47,7 +47,7 @@ public class UserLoginDialog extends JDialog {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/DBTEST", "root", "1234"
+                "jdbc:mysql://localhost:3306/DBTEST", "user1", "user1"
             );
 
             String sql = "SELECT * FROM 고객 WHERE 고객ID = ? AND 비밀번호 = ?";

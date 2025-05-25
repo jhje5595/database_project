@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
 
-public class UserRentalCancel extends JFrame {
+public class UserRentalCancel extends JFrame { // 대여한 캠핑카 예약 취소하기
     private JTable table;
     private DefaultTableModel model;
     private String license;

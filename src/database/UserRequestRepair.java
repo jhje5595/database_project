@@ -6,7 +6,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.Map;
 
-public class UserRequestRepair extends JFrame {
+public class UserRequestRepair extends JFrame { // 외부 정비 의뢰 클래스
     private Connection conn;
     private String userId;
     private String license;
@@ -28,12 +28,12 @@ public class UserRequestRepair extends JFrame {
 
         JTextField repairShopNameField = new JTextField();
 
-        JComboBox<String> detailCombo = new JComboBox<>(new String[]{
+        JComboBox<String> detailCombo = new JComboBox<>(new String[]{ // 콤보박스 형태로 점검 목록 보여줌
             "타이어교체", "배터리 교체", "브레이크 수리", "전조등 교체",
             "에어컨 점검", "오일 교환", "냉각수 교체", "서스펜션 수리", "기어점검"
         });
 
-        Map<String, Integer> detailCostMap = Map.of(
+        Map<String, Integer> detailCostMap = Map.of( // 점검하는 것에 따라서 그에 맞는 가격으로 Field에 보여주기 위해서 점검-비용 쌍 구성
             "타이어교체", 150000,
             "배터리 교체", 200000,
             "브레이크 수리", 180000,
@@ -50,7 +50,7 @@ public class UserRequestRepair extends JFrame {
 
         JTextField extraDetailField = new JTextField();
 
-        JButton viewShopBtn = new JButton("현재 등록 가능한 정비소 목록");
+        JButton viewShopBtn = new JButton("현재 등록 가능한 정비소 목록"); // 정비소명을 입력하기 위해서 현재 등록된 정비소들을 보여줌
         viewShopBtn.addActionListener(e -> showRepairShops());
 
         detailCombo.addActionListener(e -> {
@@ -115,6 +115,11 @@ public class UserRequestRepair extends JFrame {
                 String extra = extraDetailField.getText();
                 LocalDate today = LocalDate.now();
                 LocalDate due = today.plusDays(7);
+                
+                if (extra.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "기타정비내역이 없는 경우 \"없음\"으로 입력해주세요.");
+                    return;
+                }
 
                 PreparedStatement shopStmt = conn.prepareStatement(
                     "SELECT 캠핑카정비소ID FROM 외부캠핑카정비소 WHERE 정비소명 = ?");

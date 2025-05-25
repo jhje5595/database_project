@@ -159,11 +159,11 @@ class UserCanRentDay extends JFrame {
             JLabel label = new JLabel(String.valueOf(day.getDayOfMonth()), SwingConstants.CENTER);
             label.setOpaque(true);
             if (unavailableDates.contains(day)) {
-                label.setBackground(Color.GRAY);
-                label.setForeground(Color.WHITE);
+                label.setBackground(Color.GRAY); // 대여 불가능한 날짜는 회색 배경
+                label.setForeground(Color.WHITE); // 흰색 글씨
             } else {
-                label.setBackground(Color.WHITE);
-                label.setForeground(Color.BLACK);
+                label.setBackground(Color.WHITE); // 대여 가능한 날짜는 흰색 배경
+                label.setForeground(Color.BLACK); // 검은 글씨
             }
             calendarPanel.add(label);
         }
@@ -269,18 +269,38 @@ class UserRentCampingCar extends JFrame {
         add(extraFeeField);
 
         JButton saveBtn = new JButton("대여 등록");
-        JButton cancelBtn = new JButton("대여 취소"); // 추가됨
+        JButton cancelBtn = new JButton("대여 취소");
         add(saveBtn);
-        add(cancelBtn); // 레이아웃에 추가
+        add(cancelBtn);
 
         saveBtn.addActionListener(e -> {
             try {
                 String camperId = camperIdField.getText();
                 String startDate = startDateField.getText();
-                int period = Integer.parseInt(periodField.getText());
+                String periodText = periodField.getText();
+                int period;
+                LocalDate start;
+
+                try {
+                    start = LocalDate.parse(startDate);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "대여 시작일 형식이 올바르지 않습니다. (예: 2025-05-01)");
+                    return;
+                }
+
+                try {
+                    period = Integer.parseInt(periodText);
+                    if (period <= 0) {
+                        JOptionPane.showMessageDialog(this, "대여 기간은 1일 이상이어야 합니다.");
+                        return;
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "대여 기간은 숫자로 입력해야 합니다.");
+                    return;
+                }
+
                 String 기타내역 = (String) extraCombo.getSelectedItem();
                 int 기타요금 = Integer.parseInt(extraFeeField.getText());
-                LocalDate start = LocalDate.parse(startDate);
 
                 PreparedStatement checkStmt = conn.prepareStatement(
                     "SELECT 대여시작일, 대여기간 FROM 캠핑카대여 WHERE 캠핑카등록ID = ?"
@@ -289,9 +309,10 @@ class UserRentCampingCar extends JFrame {
                 ResultSet checkRs = checkStmt.executeQuery();
                 while (checkRs.next()) {
                     LocalDate existingStart = checkRs.getDate(1).toLocalDate();
+                    System.out.println("현재대여 시작날짜  : "+existingStart);
                     int existingPeriod = checkRs.getInt(2);
-                    LocalDate existingEnd = existingStart.plusDays(existingPeriod);
-                    if (!start.plusDays(period).isBefore(existingStart) && !start.isAfter(existingEnd)) {
+                    LocalDate existingEnd = existingStart.plusDays(existingPeriod-1);
+                    if (!start.plusDays(period-1).isBefore(existingStart) && !start.isAfter(existingEnd)) {
                         JOptionPane.showMessageDialog(this, "해당 날짜에는 대여가 불가능합니다.");
                         return;
                     }
@@ -358,5 +379,6 @@ class UserRentCampingCar extends JFrame {
         setVisible(true);
     }
 }
+
 
 
