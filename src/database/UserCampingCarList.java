@@ -113,7 +113,7 @@ class UserCanRentDay extends JFrame {
     public UserCanRentDay(Connection conn, String camperId) {
         this.conn = conn;
         this.camperId = camperId;
-        this.currentMonth = YearMonth.now();
+        this.currentMonth = YearMonth.of(2025, 5); // 2025년 5월 기준으로 달력이 열리게함
 
         setTitle("대여 가능일자 조회");
         setSize(700, 400);
