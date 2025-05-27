@@ -13,7 +13,7 @@ public class AdminMenu extends JFrame {
         this.conn = conn;
         
         setTitle("캠핑카 예약 시스템 - 관리자 메뉴");
-        setSize(400, 600);
+        setSize(500, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(3, 3));
         
