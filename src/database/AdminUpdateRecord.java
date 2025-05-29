@@ -13,7 +13,7 @@ public class AdminUpdateRecord extends JFrame {
     public AdminUpdateRecord(Connection conn) {
         this.conn = conn;
 
-        setTitle("테이블 변경");
+        setTitle("테이블 수정");
         setSize(500, 250);
         setLayout(new GridLayout(5, 2, 10, 10));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

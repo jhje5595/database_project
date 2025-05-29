@@ -20,7 +20,7 @@ public class AdminMenu extends JFrame {
         JButton initDbBtn = new JButton("데이터베이스 초기화");
         JButton insertBtn = new JButton("테이블 삽입");
         JButton deleteBtn = new JButton("테이블 삭제");
-        JButton updateBtn = new JButton("테이블 변경");
+        JButton updateBtn = new JButton("테이블 수정");
         JButton viewAllBtn = new JButton("전체 테이블 보기");
         JButton viewRepairBtn = new JButton("캠핑카 정비 내역 보기");
         JButton sqlQueryBtn = new JButton("임의 SQL 질의 실행");

@@ -18,7 +18,7 @@ public class AdminDeleteRecord extends JFrame {
         setLayout(new GridLayout(3, 2, 10, 10));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 메인 프로그램은 종료 안 됨
 
-        // ✅ 콤보박스 값 고정 (DB에서 불러오지 않음)
+        // 콤보박스 값 고정 (DB에서 불러오지 않음)
         tableComboBox = new JComboBox<>(new String[]{
             "캠핑카대여회사", "캠핑카", "고객", "캠핑카대여", "부품재고",
             "자체정비기록", "외부캠핑카정비소", "외부정비정보", "직원"

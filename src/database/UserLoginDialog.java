@@ -24,7 +24,7 @@ public class UserLoginDialog extends JDialog { // DB에 저장되어 있는 유�
         loginBtn = new JButton("로그인");
         cancelBtn = new JButton("취소");
 
-        add(new JLabel("아이디:"));
+        add(new JLabel("아이디: (예 : U001)"));
         add(idField);
         add(new JLabel("비밀번호:"));
         add(pwField);
