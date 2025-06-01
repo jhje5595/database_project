@@ -2,7 +2,7 @@ drop database if exists DBTEST;
 create database if not exists DBTEST;
 USE DBTEST;
 
--- user1 계정을 암호 user1 으로 만들고 필요한 권한을 부여한다.
+-- user1 계정을 암호 user1 으로 만들고 필요한 권한을 부여한다. (실제 권한 부여는 제일 아래에 존재)
 DROP USER IF EXISTS 'user1'@'localhost';
 create user user1@localhost identified by 'user1';
 

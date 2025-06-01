@@ -38,7 +38,11 @@ public class Login extends JFrame {
             dispose(); // 로그인 창 닫기
         } catch (Exception ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "관리자 로그인 실패", "에러", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "관리자 로그인 실패 \nDBTEST 데이터베이스가 존재하는지 확인해주세요. 만약 존재하지 않다면 DBTEST 데이터베이스를 생성한 뒤 다시 시도해주세요"
+            		+ "\ncreate database DBTEST; 한 문장만 실행해도 관리자 로그인이 가능합니다.(DBTEST 내에 테이블이 없어도 로그인 가능합니다. 데이터 베이스 자체가 없어서 오류가 뜰 가능성이 높습니다.)"
+            		+ "\n 테이블 생성 및 초기화는 관리자 로그인 후 \"초기화\"버튼을 누르거나 외부 sql 초기화 스크립트로 가능합니다.", "에러", JOptionPane.ERROR_MESSAGE);
+            System.out.println("관리가 로그인 자체가 DBTEST라는 데이터베이스가 존재해야합니다. 껍데기만 있는 DBTEST여도 괜찮습니다. (교수님이 올려주신 DB접속 코드 그대로 사용했습니다. 그 예제파일에서 사용한 데이터베이스 이름이 DBTEST여서 그대로 사용했습니다.)");
+            System.out.println("혹시 이 메세지가 뜬다면 mySQL workbench에서 create database DBTEST; 한 번 해주시면 감사하겠습니다.");
         }
     }
 
